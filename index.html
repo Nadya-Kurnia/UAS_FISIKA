@@ -10,7 +10,7 @@
             --sidebar-text: #e2e8f0;
             --main-bg: #f8fafc;
             --card-bg: #ffffff;
-            --accent: #0ea5e9; /* Sky Blue */
+            --accent: #0ea5e9; 
             --danger: #ef4444;
             --success: #22c55e;
             --warning: #f59e0b;
@@ -29,9 +29,9 @@
             font-size: 14px;
         }
 
-        /* --- SIDEBAR (Kiri) --- */
+        /* sidebar kiri */
         .sidebar {
-            width: 340px; /* Diperlebar sedikit untuk teks teori */
+            width: 340px; 
             background-color: var(--sidebar-bg);
             color: var(--sidebar-text);
             display: flex;
@@ -95,7 +95,7 @@
         .stat-title { font-size: 0.7rem; color: #94a3b8; display: block; margin-bottom: 3px; }
         .stat-number { font-size: 1.1rem; font-weight: bold; color: #fff; display: block; }
 
-        /* Panel Perbandingan (Requirements Poin 9) */
+        /* Panel Perbandingan */
         .comparison-box {
             background: rgba(255,255,255,0.05);
             padding: 15px;
@@ -112,12 +112,12 @@
         .btn-reset { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 20px; }
         .btn-reset:hover { background: #0284c7; }
 
-        /* --- MAIN CONTENT (Kanan) --- */
+        /* main ontent */
         .main-content {
             flex: 1;
             padding: 20px;
             display: grid;
-            grid-template-rows: 55% 45%; /* Proporsi Visual vs Grafik */
+            grid-template-rows: 55% 45%; 
             gap: 20px;
             height: 100vh;
         }
@@ -245,7 +245,6 @@
     </main>
 
     <script>
-        // --- LOGIKA FISIKA ---
         let m = 1.0, k = 10.0, A = 1.0;
         let t = 0, dt = 0.02; 
         let omega = 0;
@@ -422,11 +421,11 @@
             if (dataPoints.length < 2) return;
 
             // Plotting Lines (Auto Scaled)
-            // Posisi (Red) Scale 50
+            // Posisi (Red) 
             plotLine(dataPoints.map(p => p.x), "#ef4444", 50); 
-            // Kecepatan (Green) Scale 15
+            // Kecepatan (Green) 
             plotLine(dataPoints.map(p => p.v), "#22c55e", 15);
-            // Percepatan (Blue) Scale 3
+            // Percepatan (Blue) 
             plotLine(dataPoints.map(p => p.a), "#0ea5e9", 3);
         }
 
@@ -462,4 +461,5 @@
         loop();
     </script>
 </body>
+
 </html>
