@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Besar Fisika - Topik 9 GHS</title>
+    <style>
+        :root {
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #e2e8f0;
+            --main-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --accent: #0ea5e9; /* Sky Blue */
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Inter, Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--main-bg);
+            font-size: 14px;
+        }
+
+        /* --- SIDEBAR (Kiri) --- */
+        .sidebar {
+            width: 340px; /* Diperlebar sedikit untuk teks teori */
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            flex-shrink: 0;
+            z-index: 20;
+        }
+
+        /* Scrollbar Sidebar Custom */
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        .brand {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Identitas */
+        .student-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 25px;
+        }
+        .student-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.6; display: block; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .student-val { font-size: 1rem; font-weight: 600; color: #fff; display: block; margin-bottom: 10px; }
+
+        /* Judul Section */
+        .section-title {
+            color: var(--accent);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin: 25px 0 15px 0;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        /* Inputs */
+        .input-group { margin-bottom: 18px; }
+        .label-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.9rem; }
+        .val-display { color: var(--accent); font-weight: bold; font-family: monospace; }
+        
+        input[type=range] { width: 100%; height: 5px; background: #334155; border-radius: 5px; outline: none; -webkit-appearance: none; cursor: pointer; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; transition: transform 0.1s; }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-box { background: rgba(15, 23, 42, 0.5); border: 1px solid #334155; padding: 10px; border-radius: 6px; text-align: center; }
+        .stat-title { font-size: 0.7rem; color: #94a3b8; display: block; margin-bottom: 3px; }
+        .stat-number { font-size: 1.1rem; font-weight: bold; color: #fff; display: block; }
+
+        /* Panel Perbandingan (Requirements Poin 9) */
+        .comparison-box {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #cbd5e1;
+        }
+        .comparison-box strong { color: var(--accent); }
+        .comparison-box ul { padding-left: 20px; margin: 5px 0; }
+        .comparison-box li { margin-bottom: 5px; }
+
+        .btn-reset { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 20px; }
+        .btn-reset:hover { background: #0284c7; }
+
+        /* --- MAIN CONTENT (Kanan) --- */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: grid;
+            grid-template-rows: 55% 45%; /* Proporsi Visual vs Grafik */
+            gap: 20px;
+            height: 100vh;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .panel-header {
+            padding: 12px 20px;
+            background: #fff;
+            border-bottom: 1px solid #f1f5f9;
+            font-weight: 700;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-body { flex: 1; position: relative; width: 100%; height: 100%; background: #fff; }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* Live Values */
+        .live-values {
+            display: flex;
+            gap: 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .live-item { display: flex; align-items: center; gap: 8px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">SIMULASI FISIKA</div>
+
+        <div class="student-card">
+            <span class="student-label">Nama Mahasiswa</span>
+            <span class="student-val">Nadya Kurnia Wardhana</span>
+            <span class="student-label">NIM</span>
+            <span class="student-val">A18.2025.00200</span>
+        </div>
+
+        <div class="section-title">Parameter Kontrol</div>
+        
+        <div class="input-group">
+            <div class="label-row"><label>Massa Beban (m)</label><span class="val-display" id="val-m">1.0 kg</span></div>
+            <input type="range" id="input-m" min="0.1" max="5.0" step="0.1" value="1.0">
+        </div>
+
+        <div class="input-group">
+            <div class="label-row"><label>Konstanta Pegas (k)</label><span class="val-display" id="val-k">10 N/m</span></div>
+            <input type="range" id="input-k" min="1" max="50" step="1" value="10">
+        </div>
+
+        <div class="input-group">
+            <div class="label-row"><label>Amplitudo (A)</label><span class="val-display" id="val-a">1.0 m</span></div>
+            <input type="range" id="input-a" min="0.1" max="1.5" step="0.1" value="1.0">
+        </div>
+
+        <div class="section-title">Analisis Kuantitatif</div>
+        <div class="stats-grid">
+            <div class="stat-box"><span class="stat-title">Periode (T)</span><span class="stat-number" id="out-T">0.00 s</span></div>
+            <div class="stat-box"><span class="stat-title">Frekuensi (f)</span><span class="stat-number" id="out-f">0.00 Hz</span></div>
+            <div class="stat-box"><span class="stat-title">Energi (E)</span><span class="stat-number" id="out-E">0.00 J</span></div>
+            <div class="stat-box"><span class="stat-title">Kecepatan Sudut (ω)</span><span class="stat-number" id="out-w">0.00 r/s</span></div>
+        </div>
+
+        <div class="section-title">Perbandingan Bandul</div>
+        <div class="comparison-box">
+            <p><strong>Pegas vs Bandul Sederhana:</strong></p>
+            <ul>
+                <li><strong>Pegas:</strong> Periode bergantung pada massa (m) dan konstanta (k). <br><em>T = 2π√(m/k)</em></li>
+                <li><strong>Bandul:</strong> Periode bergantung pada panjang tali (L) dan gravitasi (g). <br><em>T = 2π√(L/g)</em></li>
+            </ul>
+            <p style="margin-top:5px; font-size:0.8rem; opacity:0.8;">
+                *Catatan: Pada bandul, massa tidak mempengaruhi periode (selama sudut kecil), berbeda dengan pegas dimana massa sangat berpengaruh.
+            </p>
+        </div>
+
+        <button class="btn-reset" onclick="resetSim()">Reset Grafik</button>
+    </aside>
+
+    <main class="main-content">
+        
+        <div class="panel">
+            <div class="panel-header">
+                <span>Visualisasi Sistem Massa-Pegas</span>
+                <span style="font-size: 0.8rem; font-weight: normal; color: #64748b;">(Gesekan Udara Diabaikan)</span>
+            </div>
+            <div class="panel-body" id="simContainer">
+                <canvas id="simCanvas"></canvas>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <div class="live-values">
+                    <div class="live-item" style="color: #ef4444;">
+                        <span class="dot" style="background: #ef4444;"></span> x: <span id="live-x">0.00</span>m
+                    </div>
+                    <div class="live-item" style="color: #22c55e;">
+                        <span class="dot" style="background: #22c55e;"></span> v: <span id="live-v">0.00</span>m/s
+                    </div>
+                    <div class="live-item" style="color: #0ea5e9;">
+                        <span class="dot" style="background: #0ea5e9;"></span> a: <span id="live-a">0.00</span>m/s²
+                    </div>
+                </div>
+                <span style="font-size: 0.8rem; color: #94a3b8;">Grafik Fungsi Waktu (t)</span>
+            </div>
+            <div class="panel-body" id="graphContainer">
+                <canvas id="graphCanvas"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- LOGIKA FISIKA ---
+        let m = 1.0, k = 10.0, A = 1.0;
+        let t = 0, dt = 0.02; 
+        let omega = 0;
+        let x = 0, v = 0, a = 0;
+        let dataPoints = [];
+        const maxDataPoints = 600;
+
+        // Elements
+        const simCanvas = document.getElementById('simCanvas');
+        const simCtx = simCanvas.getContext('2d');
+        const graphCanvas = document.getElementById('graphCanvas');
+        const graphCtx = graphCanvas.getContext('2d');
+        
+        const elX = document.getElementById('live-x');
+        const elV = document.getElementById('live-v');
+        const elA = document.getElementById('live-a');
+
+        // Resize Handling
+        function resizeCanvas() {
+            simCanvas.width = document.getElementById('simContainer').clientWidth;
+            simCanvas.height = document.getElementById('simContainer').clientHeight;
+            graphCanvas.width = document.getElementById('graphContainer').clientWidth;
+            graphCanvas.height = document.getElementById('graphContainer').clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        // Call initial resize after small delay to ensure layout loaded
+        setTimeout(resizeCanvas, 100);
+
+        // Update Values
+        function updateParams() {
+            m = parseFloat(document.getElementById('input-m').value);
+            k = parseFloat(document.getElementById('input-k').value);
+            A = parseFloat(document.getElementById('input-a').value);
+
+            // Update Labels
+            document.getElementById('val-m').innerText = m.toFixed(1) + " kg";
+            document.getElementById('val-k').innerText = k.toFixed(0) + " N/m";
+            document.getElementById('val-a').innerText = A.toFixed(1) + " m";
+
+            // Physics Calculation
+            omega = Math.sqrt(k / m);
+            let T = 2 * Math.PI * Math.sqrt(m / k);
+            let f = 1 / T;
+            let E = 0.5 * k * A * A;
+
+            document.getElementById('out-T').innerText = T.toFixed(2) + " s";
+            document.getElementById('out-f').innerText = f.toFixed(2) + " Hz";
+            document.getElementById('out-w').innerText = omega.toFixed(2) + " r/s";
+            document.getElementById('out-E').innerText = E.toFixed(2) + " J";
+        }
+
+        function resetSim() { t = 0; dataPoints = []; }
+
+        // Animation Loop
+        function loop() {
+            // SHM Equations
+            x = A * Math.cos(omega * t);
+            v = -A * omega * Math.sin(omega * t);
+            a = -A * omega * omega * Math.cos(omega * t);
+
+            // Update Live Text
+            elX.innerText = x.toFixed(2);
+            elV.innerText = v.toFixed(2);
+            elA.innerText = a.toFixed(2);
+
+            // Graph Data Buffer
+            dataPoints.push({ x, v, a });
+            if (dataPoints.length > maxDataPoints) dataPoints.shift();
+
+            drawSimulation();
+            drawGraph();
+
+            t += dt;
+            requestAnimationFrame(loop);
+        }
+
+        // Draw System
+        function drawSimulation() {
+            const w = simCanvas.width;
+            const h = simCanvas.height;
+            simCtx.clearRect(0, 0, w, h);
+            
+            // Grid Background
+            drawGrid(simCtx, w, h, 40, "#f1f5f9");
+
+            const cx = w / 2;
+            const topY = 20;
+            const eqY = h / 2; 
+            // Scale rendering
+            const scale = Math.min(80, h/5); 
+
+            let massY = eqY + (x * scale);
+
+            // Ceiling
+            simCtx.fillStyle = "#334155";
+            simCtx.fillRect(cx - 70, topY - 10, 140, 10);
+
+            // Spring (Coil Style)
+            simCtx.beginPath();
+            simCtx.strokeStyle = "#475569";
+            simCtx.lineWidth = 3;
+            simCtx.lineCap = "round";
+            simCtx.lineJoin = "round";
+            
+            let coils = 12;
+            let springLen = massY - topY;
+            simCtx.moveTo(cx, topY);
+            for (let i = 1; i <= coils; i++) {
+                let y = topY + (i * (springLen / coils));
+                let offset = (i % 2 === 0) ? -15 : 15;
+                if (i === coils) offset = 0;
+                simCtx.lineTo(cx + offset, y);
+            }
+            simCtx.stroke();
+
+            // Mass Box
+            const size = 60;
+            simCtx.fillStyle = "#ef4444";
+            simCtx.shadowColor = "rgba(0,0,0,0.2)";
+            simCtx.shadowBlur = 15;
+            simCtx.shadowOffsetY = 5;
+            simCtx.fillRect(cx - size/2, massY, size, size);
+            simCtx.shadowColor = "transparent";
+            
+            simCtx.strokeStyle = "#b91c1c";
+            simCtx.lineWidth = 2;
+            simCtx.strokeRect(cx - size/2, massY, size, size);
+
+            simCtx.fillStyle = "white";
+            simCtx.font = "bold 16px sans-serif";
+            simCtx.textAlign = "center";
+            simCtx.textBaseline = "middle";
+            simCtx.fillText(m.toFixed(1) + "kg", cx, massY + size/2);
+
+            // Equilibrium Line
+            simCtx.beginPath();
+            simCtx.strokeStyle = "#94a3b8";
+            simCtx.setLineDash([5, 5]);
+            simCtx.moveTo(20, eqY + size/2);
+            simCtx.lineTo(w - 20, eqY + size/2);
+            simCtx.stroke();
+            simCtx.setLineDash([]);
+            
+            simCtx.fillStyle = "#64748b";
+            simCtx.font = "italic 11px sans-serif";
+            simCtx.textAlign = "right";
+            simCtx.fillText("Titik Setimbang (x=0)", w - 30, eqY + size/2 - 8);
+        }
+
+        // Draw Graph
+        function drawGraph() {
+            const w = graphCanvas.width;
+            const h = graphCanvas.height;
+            const midH = h / 2;
+            
+            graphCtx.clearRect(0, 0, w, h);
+            drawGrid(graphCtx, w, h, 50, "#f8fafc");
+
+            // Zero Line
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = "#cbd5e1";
+            graphCtx.lineWidth = 2;
+            graphCtx.moveTo(0, midH);
+            graphCtx.lineTo(w, midH);
+            graphCtx.stroke();
+
+            // Graph Labels (Left side)
+            graphCtx.fillStyle = "#64748b";
+            graphCtx.font = "11px sans-serif";
+            graphCtx.textAlign = "left";
+            graphCtx.fillText("+ Amp", 10, midH - 45); 
+            graphCtx.fillText("- Amp", 10, midH + 55);
+
+            if (dataPoints.length < 2) return;
+
+            // Plotting Lines (Auto Scaled)
+            // Posisi (Red) Scale 50
+            plotLine(dataPoints.map(p => p.x), "#ef4444", 50); 
+            // Kecepatan (Green) Scale 15
+            plotLine(dataPoints.map(p => p.v), "#22c55e", 15);
+            // Percepatan (Blue) Scale 3
+            plotLine(dataPoints.map(p => p.a), "#0ea5e9", 3);
+        }
+
+        function plotLine(data, color, scale) {
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = color;
+            graphCtx.lineWidth = 2;
+            let step = graphCanvas.width / maxDataPoints;
+            for (let i=0; i<data.length; i++) {
+                let y = (graphCanvas.height/2) - (data[i] * scale);
+                if (i===0) graphCtx.moveTo(i*step, y);
+                else graphCtx.lineTo(i*step, y);
+            }
+            graphCtx.stroke();
+        }
+
+        function drawGrid(ctx, w, h, gap, color) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            for (let x=0; x<=w; x+=gap) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
+            for (let y=0; y<=h; y+=gap) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
+            ctx.stroke();
+        }
+
+        // Init Events
+        document.getElementById('input-m').addEventListener('input', updateParams);
+        document.getElementById('input-k').addEventListener('input', updateParams);
+        document.getElementById('input-a').addEventListener('input', updateParams);
+        
+        // Start
+        updateParams();
+        loop();
+    </script>
+</body>
+</html>
